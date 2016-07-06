@@ -23,7 +23,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/golang/glog"
 	"k8s.io/kubernetes/pkg/api"
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
@@ -40,17 +39,17 @@ func flattenSubsets(subsets []api.EndpointSubset) []string {
 
 func main() {
 	flag.Parse()
-	glog.Info("Kubernetes Elasticsearch logging discovery")
+	//glog.Info("Kubernetes Elasticsearch logging discovery")
 
 	c, err := client.NewInCluster()
 	if err != nil {
-		glog.Fatalf("Failed to make client: %v", err)
+		//glog.Fatalf("Failed to make client: %v", err)
 	}
 	namespace := api.NamespaceSystem
 	envNamespace := os.Getenv("NAMESPACE")
 	if envNamespace != "" {
 		if _, err := c.Namespaces().Get(envNamespace); err != nil {
-			glog.Fatalf("%s namespace doesn't exist: %v", envNamespace, err)
+			//glog.Fatalf("%s namespace doesn't exist: %v", envNamespace, err)
 		}
 		namespace = envNamespace
 	}
@@ -67,7 +66,7 @@ func main() {
 	// If we did not find an elasticsearch logging service then log a warning
 	// and return without adding any unicast hosts.
 	if elasticsearch == nil {
-		glog.Warningf("Failed to find the elasticsearch-logging service: %v", err)
+		//glog.Warningf("Failed to find the elasticsearch-logging service: %v", err)
 		return
 	}
 
@@ -81,7 +80,7 @@ func main() {
 			continue
 		}
 		addrs = flattenSubsets(endpoints.Subsets)
-		glog.Infof("Found %s", addrs)
+		//glog.Infof("Found %s", addrs)
 		if len(addrs) > 0 && len(addrs) == count {
 			break
 		}
@@ -89,10 +88,10 @@ func main() {
 	}
 	// If there was an error finding endpoints then log a warning and quit.
 	if err != nil {
-		glog.Warningf("Error finding endpoints: %v", err)
+		//glog.Warningf("Error finding endpoints: %v", err)
 		return
 	}
 
-	glog.Infof("Endpoints = %s", addrs)
+	//glog.Infof("Endpoints = %s", addrs)
 	fmt.Printf("discovery.zen.ping.unicast.hosts: [%s]\n", strings.Join(addrs, ", "))
 }

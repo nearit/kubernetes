@@ -20,14 +20,16 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       containers:
-      - image: gcr.io/google_containers/elasticsearch:1.9
+      - image: 214514573262.dkr.ecr.eu-west-1.amazonaws.com/nearit-infrastructural/elasticsearch:2.3.3
         name: elasticsearch-logging         
         resources:
           # keep request = limit to keep this container in guaranteed class
           limits:
             cpu: 100m
+            memory: 512Mi
           requests:
             cpu: 100m
+            memory: 512Mi
         ports:
         - containerPort: 9200
           name: db
